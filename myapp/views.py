@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 
 
 # Create your views here.
@@ -24,7 +25,8 @@ def login_page(request):
         password = request.POST.get('password', '')
 
         if username == '' or password == '':
-            return HttpResponse("Заполните все поля")
+            messages.error(request, 'Заполните все поля!')
+            return redirect('/login')
 
         # проверяем правильность логина и пароля
         user = authenticate(username=username, password=password)
@@ -33,7 +35,8 @@ def login_page(request):
             login(request, user)
             return redirect('/')
         else:
-            return HttpResponse("Логин неверен")
+            messages.error(request, 'Неправильный логин или пароль!')
+            return redirect('/login')
 
 
 def register(request):
